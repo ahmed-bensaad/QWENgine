@@ -1,0 +1,40 @@
+Write a Python function that merges two sorted lists into one sorted list, with a docstring and tests.
+Explain the difference between TCP and UDP for a beginner.
+What are three practical tips for sleeping better? Keep it short.
+Write a short story (about 150 words) about a lighthouse keeper who finds a message in a bottle.
+Explain how photosynthesis works to a high school student.
+Write a SQL query that returns the top 5 customers by total order value, and explain it.
+Give me a markdown table comparing Python, Rust and Go on speed, safety and learning curve.
+Translate into French: "The meeting has been moved to Thursday afternoon because the manager is travelling."
+Traduce al español: "We need to finish the report before the end of the week."
+Übersetze ins Deutsche: "The weather will be sunny tomorrow, but cold in the morning."
+用中文解释一下什么是机器学习。
+日本語で自己紹介の例文を書いてください。
+Write a bash script that finds all files larger than 100MB in a directory tree and prints their sizes.
+Solve step by step: a train travels 120 km in 1.5 hours. What is its average speed in m/s?
+Write a professional email asking a colleague to review a pull request by Friday.
+Summarize the plot of Romeo and Juliet in five sentences.
+Write a C++ class for a thread-safe queue using std::mutex and std::condition_variable.
+What is the capital of Australia, and why is it not Sydney?
+Return a JSON object describing a book with title, author, year and a list of genres.
+List 10 creative names for a coffee shop, with a one-line explanation for each.
+Explain big-O notation with examples of O(1), O(n), O(n log n) and O(n^2).
+Write a haiku about autumn rain.
+How do I center a div horizontally and vertically with CSS? Show code.
+Write a JavaScript function that debounces another function, and explain how it works.
+What are the main causes of inflation? Answer in bullet points.
+Write a dialogue between a customer and a waiter in a restaurant.
+Explain what a neural network is, using an analogy.
+Give me a 3-day itinerary for a trip to Rome.
+Explain recursion and write a recursive factorial in Python and in C.
+What is the difference between a list and a tuple in Python?
+Write a limerick about a cat who loves to code.
+Describe how a refrigerator works.
+Write unit tests with pytest for a function that validates email addresses.
+اشرح باختصار ما هو الذكاء الاصطناعي.
+Explique en français comment fonctionne un moteur à combustion.
+Write a Dockerfile for a Python Flask application and explain each line.
+What are the pros and cons of remote work? Use headings.
+Prove that the square root of 2 is irrational.
+Write a regular expression that matches ISO 8601 dates and explain it.
+Give me a recipe for a simple tomato pasta sauce.

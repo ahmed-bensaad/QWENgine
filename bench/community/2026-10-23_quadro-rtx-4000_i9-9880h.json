@@ -1,0 +1,161 @@
+{
+ "schema": 1,
+ "date": "2026-10-23",
+ "submitter": "",
+ "notes": "reference machine (QWENgine is tuned on it); desktop session on the GPU",
+ "machine": {
+  "gpu": "Quadro RTX 4000",
+  "vram_mib": "8192",
+  "vram_used_mib_at_start": "453",
+  "driver": "595.91.07",
+  "pcie_gen": "3",
+  "pcie_width": "16",
+  "gpu_max_sm_mhz": "1560",
+  "compute_cap": "7.5",
+  "gpu_power_limit_w": "[N/A]",
+  "cpu": "Intel(R) Core(TM) i9-9880H CPU @ 2.30GHz",
+  "cpu_cores": 8,
+  "cpu_threads": 16,
+  "avx512": false,
+  "gather_data_sampling": "Vulnerable",
+  "ram_gib": 30.7,
+  "laptop": true,
+  "os": "Ubuntu 26.04.1 LTS, kernel 7.0.0-34-generic",
+  "ram_type": "DDR4"
+ },
+ "build": {
+  "commit": "initial release",
+  "cuda": "12.4.131",
+  "cuda_arch": "75"
+ },
+ "quick": false,
+ "results": {
+  "kv": "q4_0",
+  "spec_64k_tok_s": 10.1648,
+  "acceptance_64k": 0.67,
+  "plain_64k_tok_s": 6.6173,
+  "prefill_64k_tok_s": 349.923,
+  "spec_128k_tok_s": 7.2376,
+  "acceptance_128k": 0.6252,
+  "plain_128k_tok_s": 4.5329,
+  "prefill_128k_tok_s": 319.299,
+  "image_encode_300_ms": 170.0
+ },
+ "hw_probe": {
+  "vram_read_gbs": 417.2,
+  "pcie_h2d_gbs": 6.48,
+  "cpu_dram_read_gbs": 36.0,
+  "cpu_dram_read_during_dma_gbs": 28.6
+ },
+ "tests": {
+  "exit": 0,
+  "summary": "100% tests passed, 0 tests failed out of 35",
+  "failed": [],
+  "disabled": 0,
+  "seconds": 454
+ },
+ "runs": [
+  {
+   "label": "hw_probe",
+   "result": {
+    "vram_read_gbs": 417.2,
+    "pcie_h2d_gbs": 6.48,
+    "cpu_dram_read_gbs": 36.0,
+    "cpu_dram_read_during_dma_gbs": 28.6
+   }
+  },
+  {
+   "label": "long context 64k",
+   "cmd": [
+    "/home/bensaad/Workspace/perso/QWENgine/build/q38_eval",
+    "/home/bensaad/Workspace/perso/QWENgine/models/Qwen3.8-27B-GSQ-RCO-IQ3_XXS-mtp.gguf",
+    "longctx",
+    "--depth",
+    "65536",
+    "--ctx",
+    "66560",
+    "--kv",
+    "q4_0",
+    "--gen",
+    "256",
+    "--nprompts",
+    "4"
+   ],
+   "exit": 0,
+   "seconds": 310.0,
+   "cpu_temp_start": 59.0,
+   "gpu_temp_start": "53",
+   "result": {
+    "longctx_depth": 65536.0,
+    "prefill_tok_s": 349.923,
+    "spec_tok_s": 10.1648,
+    "acceptance": 0.67,
+    "tokens_per_pass": 3.4478,
+    "plain_tok_s": 6.6173
+   }
+  },
+  {
+   "label": "long context 128k",
+   "cmd": [
+    "/home/bensaad/Workspace/perso/QWENgine/build/q38_eval",
+    "/home/bensaad/Workspace/perso/QWENgine/models/Qwen3.8-27B-GSQ-RCO-IQ3_XXS-mtp.gguf",
+    "longctx",
+    "--depth",
+    "130048",
+    "--ctx",
+    "131072",
+    "--kv",
+    "q4_0",
+    "--gen",
+    "256",
+    "--nprompts",
+    "4"
+   ],
+   "exit": 0,
+   "seconds": 582.4,
+   "cpu_temp_start": 68.0,
+   "gpu_temp_start": "69",
+   "result": {
+    "longctx_depth": 130048.0,
+    "prefill_tok_s": 319.299,
+    "spec_tok_s": 7.2376,
+    "acceptance": 0.6252,
+    "tokens_per_pass": 3.0751,
+    "plain_tok_s": 4.5329
+   }
+  },
+  {
+   "label": "image encode (300 tokens)",
+   "cmd": [
+    "/home/bensaad/Workspace/perso/QWENgine/build/q38_eval",
+    "/home/bensaad/Workspace/perso/QWENgine/models/Qwen3.8-27B-GSQ-RCO-IQ3_XXS-mtp.gguf",
+    "vision",
+    "--no-mtp",
+    "--mmproj",
+    "/home/bensaad/Workspace/perso/QWENgine/models/mmproj-Qwen3.8-27B-BF16.gguf",
+    "--image",
+    "/tmp/tmp95s2apmx/image.ppm",
+    "--ctx",
+    "4096"
+   ],
+   "exit": 0,
+   "seconds": 10.4,
+   "cpu_temp_start": 68.0,
+   "gpu_temp_start": "66",
+   "result": {
+    "encode_ms": 170.0
+   }
+  },
+  {
+   "label": "ctest",
+   "result": {
+    "exit": 0,
+    "summary": "100% tests passed, 0 tests failed out of 35",
+    "failed": [],
+    "disabled": 0,
+    "seconds": 454
+   }
+  }
+ ],
+ "hw_probe_output": "== GPU ==\nname=Quadro RTX 4000 cc=7.5 SMs=40 sm_clock=1560 MHz mem_clock=7001 MHz bus=256 bit L2=4096 KiB\ntheoretical VRAM BW = 448.1 GB/s\nVRAM total=7778 MiB free=7221 MiB  smem/block optin=64 KiB regs/SM=65536\ndriver=13020 runtime=12020 asyncEngines=3\n\n== launch ==\nback-to-back launch: 1.62 us/kernel | launch+sync roundtrip: 6.48 us | in CUDA graph: 1.05 us/kernel\n\n== VRAM ==\nread kernel 160 blocks x256: 417.2 GB/s\nread kernel 320 blocks x256: 417.2 GB/s\nread kernel 640 blocks x256: 417.1 GB/s\nread   2 MiB x200 (incl. launch): 415.6 GB/s, 5.0 us/pass\nread  16 MiB x200 (incl. launch): 389.7 GB/s, 43.1 us/pass\nread  64 MiB x200 (incl. launch): 409.7 GB/s, 163.8 us/pass\nD2D memcpy 256 MiB: 197.7 GB/s (read+write counted once)\n\n== PCIe ==\n   1 MiB: H2D pinned 6.39 | D2H pinned 6.53 | H2D pageable 6.21 | D2H pageable 4.47 GB/s\n   8 MiB: H2D pinned 6.45 | D2H pinned 6.58 | H2D pageable 6.11 | D2H pageable 5.97 GB/s\n  64 MiB: H2D pinned 6.48 | D2H pinned 6.37 | H2D pageable 6.08 | D2H pageable 6.14 GB/s\n 256 MiB: H2D pinned 6.39 | D2H pinned 6.39 | H2D pageable 6.33 | D2H pageable 6.39 GB/s\n20 KiB roundtrip (copy+sync): H2D 9.4 us, D2H 9.1 us\nH2D pinned while kernel runs on other stream: 6.43 GB/s\n\n== CPU DRAM ==\nread  1 threads: 24.1 GB/s\nread  2 threads: 33.9 GB/s\nread  4 threads: 34.1 GB/s\nread  6 threads: 35.5 GB/s\nread  8 threads: 36.0 GB/s\nread 12 threads: 35.0 GB/s\nread 16 threads: 32.8 GB/s\ncontention: CPU read 8thr 28.6 GB/s while H2D pinned DMA 6.41 GB/s\n"
+}

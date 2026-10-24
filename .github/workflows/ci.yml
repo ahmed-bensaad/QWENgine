@@ -1,0 +1,21 @@
+# Build with the CUDA 12.4 toolkit and run the checks that need no GPU and no model files (GitHub-hosted runners
+# have no GPU). The model-level tests (logits, kernels, speculative decoding, server) run on a machine with the GPU
+# and the GGUF files: `cd build && ctest` (docs/DEVELOPMENT.md). tools/ci.sh holds the steps.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Build (CUDA 12.4, sm_75) and GPU-free tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Build and test
+        run: bash tools/ci.sh "$GITHUB_WORKSPACE" "$RUNNER_TEMP/build"

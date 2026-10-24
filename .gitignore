@@ -1,0 +1,8 @@
+build/
+build-ci/
+*.o
+__pycache__/
+tests/golden/data/
+data/cache/
+models/
+.claude/

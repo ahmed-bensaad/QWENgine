@@ -1,0 +1,813 @@
+[
+ {
+  "name": "user_only",
+  "messages": [
+   {
+    "role": "user",
+    "content": "Hello!"
+   }
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.<|im_end|>\n<|im_start|>user\nHello!<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "system_user_no_think",
+  "messages": [
+   {
+    "role": "system",
+    "content": "  Be brief. "
+   },
+   {
+    "role": "user",
+    "content": "Hi\n"
+   }
+  ],
+  "options": {
+   "enable_thinking": false
+  },
+  "expected": "<|im_start|>system\nBe brief.<|im_end|>\n<|im_start|>user\nHi<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+ },
+ {
+  "name": "effort_low",
+  "messages": [
+   {
+    "role": "user",
+    "content": "2+2?"
+   }
+  ],
+  "options": {
+   "reasoning_effort": "low"
+  },
+  "expected": "<|im_start|>system\nReasoning effort is set to low. Keep your thinking brief and focused, moving directly to the conclusion without unnecessary elaboration.<|im_end|>\n<|im_start|>user\n2+2?<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "effort_medium",
+  "messages": [
+   {
+    "role": "system",
+    "content": "S"
+   },
+   {
+    "role": "user",
+    "content": "2+2?"
+   }
+  ],
+  "options": {
+   "reasoning_effort": "medium"
+  },
+  "expected": "<|im_start|>system\nS<|im_end|>\n<|im_start|>user\n2+2?<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "tools_system",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a coding agent."
+   },
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   },
+   {
+    "type": "function",
+    "function": {
+     "name": "search_files",
+     "description": "Search files. Supports ünïcødé — and \"quotes\".",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       },
+       "paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "options": {
+        "type": "object",
+        "properties": {
+         "regex": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    }
+   }
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n{\"type\": \"function\", \"function\": {\"name\": \"search_files\", \"description\": \"Search files. Supports ünïcødé — and \\\"quotes\\\".\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"paths\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}, \"options\": {\"type\": \"object\", \"properties\": {\"regex\": {\"type\": \"boolean\"}}}}, \"required\": [\"query\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>\n\nYou are a coding agent.<|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "tools_no_system_no_think",
+  "messages": [
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   }
+  ],
+  "options": {
+   "enable_thinking": false
+  },
+  "expected": "<|im_start|>system\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT><|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+ },
+ {
+  "name": "agent_loop",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a coding agent."
+   },
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   },
+   {
+    "role": "assistant",
+    "content": "",
+    "reasoning_content": "  I should search first.\n",
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "type": "function",
+      "function": {
+       "name": "search_files",
+       "arguments": "{\"query\": \"TODO\", \"paths\": [\"src\", \"docs/\\u00e9\"], \"options\": {\"regex\": false}}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_1",
+    "content": "src/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO"
+   },
+   {
+    "role": "assistant",
+    "content": "Found two TODOs. Now the weather.",
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Paris\", \"days\": 2}"
+      }
+     },
+     {
+      "id": "call_3",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Lyon\\nFrance\", \"unit\": \"celsius\"}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_2",
+    "content": "{\"temp\": 18, \"sky\": \"clear\"}"
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_3",
+    "content": [
+     {
+      "type": "text",
+      "text": "21 C, cloudy"
+     }
+    ]
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   },
+   {
+    "type": "function",
+    "function": {
+     "name": "search_files",
+     "description": "Search files. Supports ünïcødé — and \"quotes\".",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       },
+       "paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "options": {
+        "type": "object",
+        "properties": {
+         "regex": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    }
+   }
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n{\"type\": \"function\", \"function\": {\"name\": \"search_files\", \"description\": \"Search files. Supports ünïcødé — and \\\"quotes\\\".\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"paths\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}, \"options\": {\"type\": \"object\", \"properties\": {\"regex\": {\"type\": \"boolean\"}}}}, \"required\": [\"query\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>\n\nYou are a coding agent.<|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<think>\nI should search first.\n</think>\n\n<tool_call>\n<function=search_files>\n<parameter=query>\nTODO\n</parameter>\n<parameter=paths>\n[\"src\", \"docs/é\"]\n</parameter>\n<parameter=options>\n{\"regex\": false}\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\nsrc/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nFound two TODOs. Now the weather.\n\n<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n2\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=get_weather>\n<parameter=city>\nLyon\nFrance\n</parameter>\n<parameter=unit>\ncelsius\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\n{\"temp\": 18, \"sky\": \"clear\"}\n</tool_response>\n<tool_response>\n21 C, cloudy\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "agent_loop_followup",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a coding agent."
+   },
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   },
+   {
+    "role": "assistant",
+    "content": "",
+    "reasoning_content": "  I should search first.\n",
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "type": "function",
+      "function": {
+       "name": "search_files",
+       "arguments": "{\"query\": \"TODO\", \"paths\": [\"src\", \"docs/\\u00e9\"], \"options\": {\"regex\": false}}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_1",
+    "content": "src/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO"
+   },
+   {
+    "role": "assistant",
+    "content": "Found two TODOs. Now the weather.",
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Paris\", \"days\": 2}"
+      }
+     },
+     {
+      "id": "call_3",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Lyon\\nFrance\", \"unit\": \"celsius\"}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_2",
+    "content": "{\"temp\": 18, \"sky\": \"clear\"}"
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_3",
+    "content": [
+     {
+      "type": "text",
+      "text": "21 C, cloudy"
+     }
+    ]
+   },
+   {
+    "role": "assistant",
+    "content": "Paris 18 C clear, Lyon 21 C cloudy.",
+    "reasoning_content": "Summarize."
+   },
+   {
+    "role": "user",
+    "content": [
+     {
+      "type": "text",
+      "text": "Thanks! "
+     },
+     {
+      "type": "text",
+      "text": "And Rome?"
+     }
+    ]
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   },
+   {
+    "type": "function",
+    "function": {
+     "name": "search_files",
+     "description": "Search files. Supports ünïcødé — and \"quotes\".",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       },
+       "paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "options": {
+        "type": "object",
+        "properties": {
+         "regex": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    }
+   }
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n{\"type\": \"function\", \"function\": {\"name\": \"search_files\", \"description\": \"Search files. Supports ünïcødé — and \\\"quotes\\\".\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"paths\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}, \"options\": {\"type\": \"object\", \"properties\": {\"regex\": {\"type\": \"boolean\"}}}}, \"required\": [\"query\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>\n\nYou are a coding agent.<|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<think>\nI should search first.\n</think>\n\n<tool_call>\n<function=search_files>\n<parameter=query>\nTODO\n</parameter>\n<parameter=paths>\n[\"src\", \"docs/é\"]\n</parameter>\n<parameter=options>\n{\"regex\": false}\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\nsrc/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nFound two TODOs. Now the weather.\n\n<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n2\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=get_weather>\n<parameter=city>\nLyon\nFrance\n</parameter>\n<parameter=unit>\ncelsius\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\n{\"temp\": 18, \"sky\": \"clear\"}\n</tool_response>\n<tool_response>\n21 C, cloudy\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\nSummarize.\n</think>\n\nParis 18 C clear, Lyon 21 C cloudy.<|im_end|>\n<|im_start|>user\nThanks! And Rome?<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "agent_loop_drop_thinking",
+  "messages": [
+   {
+    "role": "system",
+    "content": "You are a coding agent."
+   },
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   },
+   {
+    "role": "assistant",
+    "content": "",
+    "reasoning_content": "  I should search first.\n",
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "type": "function",
+      "function": {
+       "name": "search_files",
+       "arguments": "{\"query\": \"TODO\", \"paths\": [\"src\", \"docs/\\u00e9\"], \"options\": {\"regex\": false}}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_1",
+    "content": "src/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO"
+   },
+   {
+    "role": "assistant",
+    "content": "Found two TODOs. Now the weather.",
+    "tool_calls": [
+     {
+      "id": "call_2",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Paris\", \"days\": 2}"
+      }
+     },
+     {
+      "id": "call_3",
+      "type": "function",
+      "function": {
+       "name": "get_weather",
+       "arguments": "{\"city\": \"Lyon\\nFrance\", \"unit\": \"celsius\"}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_2",
+    "content": "{\"temp\": 18, \"sky\": \"clear\"}"
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_3",
+    "content": [
+     {
+      "type": "text",
+      "text": "21 C, cloudy"
+     }
+    ]
+   },
+   {
+    "role": "assistant",
+    "content": "Done.",
+    "reasoning_content": "Summarize."
+   },
+   {
+    "role": "user",
+    "content": "Again?"
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   },
+   {
+    "type": "function",
+    "function": {
+     "name": "search_files",
+     "description": "Search files. Supports ünïcødé — and \"quotes\".",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       },
+       "paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "options": {
+        "type": "object",
+        "properties": {
+         "regex": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    }
+   }
+  ],
+  "options": {
+   "preserve_thinking": false
+  },
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n{\"type\": \"function\", \"function\": {\"name\": \"search_files\", \"description\": \"Search files. Supports ünïcødé — and \\\"quotes\\\".\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"paths\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}, \"options\": {\"type\": \"object\", \"properties\": {\"regex\": {\"type\": \"boolean\"}}}}, \"required\": [\"query\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT>\n\nYou are a coding agent.<|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<tool_call>\n<function=search_files>\n<parameter=query>\nTODO\n</parameter>\n<parameter=paths>\n[\"src\", \"docs/é\"]\n</parameter>\n<parameter=options>\n{\"regex\": false}\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\nsrc/a.cpp:12: TODO fix\nsrc/b.cpp:3: TODO\n</tool_response><|im_end|>\n<|im_start|>assistant\nFound two TODOs. Now the weather.\n\n<tool_call>\n<function=get_weather>\n<parameter=city>\nParis\n</parameter>\n<parameter=days>\n2\n</parameter>\n</function>\n</tool_call>\n<tool_call>\n<function=get_weather>\n<parameter=city>\nLyon\nFrance\n</parameter>\n<parameter=unit>\ncelsius\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\n{\"temp\": 18, \"sky\": \"clear\"}\n</tool_response>\n<tool_response>\n21 C, cloudy\n</tool_response><|im_end|>\n<|im_start|>assistant\nDone.<|im_end|>\n<|im_start|>user\nAgain?<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "assistant_history_no_tools",
+  "messages": [
+   {
+    "role": "user",
+    "content": "Tell me a joke."
+   },
+   {
+    "role": "assistant",
+    "content": "Why did the chicken cross the road?"
+   },
+   {
+    "role": "user",
+    "content": "Why?"
+   }
+  ],
+  "options": {
+   "enable_thinking": false
+  },
+  "expected": "<|im_start|>user\nTell me a joke.<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nWhy did the chicken cross the road?<|im_end|>\n<|im_start|>user\nWhy?<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+ },
+ {
+  "name": "images",
+  "messages": [
+   {
+    "role": "system",
+    "content": "Describe images."
+   },
+   {
+    "role": "user",
+    "content": [
+     {
+      "type": "text",
+      "text": "Compare "
+     },
+     {
+      "type": "image_url",
+      "image_url": {
+       "url": "data:image/png;base64,QQ=="
+      }
+     },
+     {
+      "type": "text",
+      "text": " with "
+     },
+     {
+      "type": "image",
+      "image": "data:image/jpeg;base64,Qg=="
+     }
+    ]
+   },
+   {
+    "role": "assistant",
+    "content": "The first is brighter."
+   },
+   {
+    "role": "user",
+    "content": [
+     {
+      "type": "image_url",
+      "image_url": "data:image/png;base64,Qw=="
+     },
+     {
+      "type": "text",
+      "text": "And this one?"
+     }
+    ]
+   }
+  ],
+  "images": [
+   "data:image/png;base64,QQ==",
+   "data:image/jpeg;base64,Qg==",
+   "data:image/png;base64,Qw=="
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\nDescribe images.<|im_end|>\n<|im_start|>user\nCompare <|vision_start|><|image_pad|><|vision_end|> with <|vision_start|><|image_pad|><|vision_end|><|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\nThe first is brighter.<|im_end|>\n<|im_start|>user\n<|vision_start|><|image_pad|><|vision_end|>And this one?<|im_end|>\n<|im_start|>assistant\n<think>\n"
+ },
+ {
+  "name": "tool_image",
+  "messages": [
+   {
+    "role": "user",
+    "content": "Find TODOs and check the weather in Paris."
+   },
+   {
+    "role": "assistant",
+    "content": "",
+    "reasoning_content": "  I should search first.\n",
+    "tool_calls": [
+     {
+      "id": "call_1",
+      "type": "function",
+      "function": {
+       "name": "search_files",
+       "arguments": "{\"query\": \"TODO\", \"paths\": [\"src\", \"docs/\\u00e9\"], \"options\": {\"regex\": false}}"
+      }
+     }
+    ]
+   },
+   {
+    "role": "tool",
+    "tool_call_id": "call_1",
+    "content": [
+     {
+      "type": "text",
+      "text": "Screenshot:"
+     },
+     {
+      "type": "image_url",
+      "image_url": {
+       "url": "data:image/png;base64,RA=="
+      }
+     }
+    ]
+   }
+  ],
+  "tools": [
+   {
+    "type": "function",
+    "function": {
+     "name": "get_weather",
+     "description": "Current weather for a city.",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "city": {
+        "type": "string",
+        "description": "City name, e.g. Paris"
+       },
+       "unit": {
+        "type": "string",
+        "enum": [
+         "celsius",
+         "fahrenheit"
+        ]
+       },
+       "days": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 7.5,
+        "default": 1.0
+       }
+      },
+      "required": [
+       "city"
+      ]
+     }
+    }
+   },
+   {
+    "type": "function",
+    "function": {
+     "name": "search_files",
+     "description": "Search files. Supports ünïcødé — and \"quotes\".",
+     "parameters": {
+      "type": "object",
+      "properties": {
+       "query": {
+        "type": "string"
+       },
+       "paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "options": {
+        "type": "object",
+        "properties": {
+         "regex": {
+          "type": "boolean"
+         }
+        }
+       }
+      },
+      "required": [
+       "query"
+      ]
+     }
+    }
+   }
+  ],
+  "images": [
+   "data:image/png;base64,RA=="
+  ],
+  "expected": "<|im_start|>system\nReasoning effort is set to xhigh. Please think carefully through the task, validate key assumptions, consider plausible alternatives, and prioritize correctness, consistency, and clarity in the final answer.\n\n# Tools\n\nYou have access to the following functions:\n\n<tools>\n{\"type\": \"function\", \"function\": {\"name\": \"get_weather\", \"description\": \"Current weather for a city.\", \"parameters\": {\"type\": \"object\", \"properties\": {\"city\": {\"type\": \"string\", \"description\": \"City name, e.g. Paris\"}, \"unit\": {\"type\": \"string\", \"enum\": [\"celsius\", \"fahrenheit\"]}, \"days\": {\"type\": \"integer\", \"minimum\": 1, \"maximum\": 7.5, \"default\": 1.0}}, \"required\": [\"city\"]}}}\n{\"type\": \"function\", \"function\": {\"name\": \"search_files\", \"description\": \"Search files. Supports ünïcødé — and \\\"quotes\\\".\", \"parameters\": {\"type\": \"object\", \"properties\": {\"query\": {\"type\": \"string\"}, \"paths\": {\"type\": \"array\", \"items\": {\"type\": \"string\"}}, \"options\": {\"type\": \"object\", \"properties\": {\"regex\": {\"type\": \"boolean\"}}}}, \"required\": [\"query\"]}}}\n</tools>\n\nIf you choose to call a function ONLY reply in the following format with NO suffix:\n\n<tool_call>\n<function=example_function_name>\n<parameter=example_parameter_1>\nvalue_1\n</parameter>\n<parameter=example_parameter_2>\nThis is the value for the second parameter\nthat can span\nmultiple lines\n</parameter>\n</function>\n</tool_call>\n\n<IMPORTANT>\nReminder:\n- Function calls MUST follow the specified format: an inner <function=...></function> block must be nested within <tool_call></tool_call> XML tags\n- Required parameters MUST be specified\n- You may provide optional reasoning for your function call in natural language BEFORE the function call, but NOT after\n- If there is no function call available, answer the question like normal with your current knowledge and do not tell the user about function calls\n</IMPORTANT><|im_end|>\n<|im_start|>user\nFind TODOs and check the weather in Paris.<|im_end|>\n<|im_start|>assistant\n<think>\nI should search first.\n</think>\n\n<tool_call>\n<function=search_files>\n<parameter=query>\nTODO\n</parameter>\n<parameter=paths>\n[\"src\", \"docs/é\"]\n</parameter>\n<parameter=options>\n{\"regex\": false}\n</parameter>\n</function>\n</tool_call><|im_end|>\n<|im_start|>user\n<tool_response>\nScreenshot:<|vision_start|><|image_pad|><|vision_end|>\n</tool_response><|im_end|>\n<|im_start|>assistant\n<think>\n"
+ }
+]
